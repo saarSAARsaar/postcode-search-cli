@@ -3,11 +3,8 @@ require 'byebug'
 
 data_path = "Downloads/plz_verzeichnis_v2.csv"
 
-row_count = 0
-CSV.parse(File.read(data_path), headers: true, col_sep: ";") do |row|
-    row_count += 1
-end
-puts "Number of rows: " + row_count.to_s 
+postcodes = CSV.parse(File.read(data_path), headers: true, col_sep: ";")
+puts "Number of rows: " + postcodes.length.to_s
 puts ''
 
 running = true
@@ -25,25 +22,15 @@ while running
     end  
     return_vals = []
 
-    CSV.parse(File.read(data_path), headers: true, col_sep: ";") do |row|
-        row_count += 1
-        if row[col_to_check] == col_val_to_find
-            return_vals.append(row[col_to_return])
-        end
-    end
+    rows = postcodes.find_all { |row| row[col_to_check] == col_val_to_find }
+    return_vals = rows.map { |row| row[col_to_return] }
 
     puts ''
     if return_vals.length == 0
         # puts "The postcode #{postcode} was not found"
         puts "No values were found for #{col_val_to_find}"
     else
-        filtered_return_vals = []
-        return_vals.each do |val|
-            if !filtered_return_vals.include? val
-                filtered_return_vals.append(val)
-            end
-        end
-        puts filtered_return_vals
+        puts return_vals.uniq
     end
 
     puts "\nDo you want to end the program? Type exit if so"
