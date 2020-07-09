@@ -14,6 +14,12 @@ end
 if cantons.length == 0
     puts "The postcode #{postcode} was not found"
 else
-    puts cantons
+    # filtered_cantons = []
+    # cantons.each do |canton|
+    #    if !filtered_cantons.include? canton
+    #        filtered_cantons.append(canton)
+    #    end
+    # end
+    puts cantons.uniq
 end
 puts row_count
