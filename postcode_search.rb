@@ -12,28 +12,38 @@ puts ''
 
 running = true
 while running
-    puts "Enter a postcode"
-    postcode = gets.chomp
-    cantons = []
+    puts "Enter a postcode or a name of city/town"
+    col_val_to_find = gets.chomp
+    if !/\A\d+\z/.match(col_val_to_find)
+        puts "Checking for the postcode of that place..."
+        col_to_check = "ortbez18"
+        col_to_return = "postleitzahl"
+    else
+        puts "Checking for the canton of that postcode..."
+        col_to_check = "postleitzahl"
+        col_to_return = "kanton"
+    end  
+    return_vals = []
 
     CSV.parse(File.read(data_path), headers: true, col_sep: ";") do |row|
         row_count += 1
-        if row["postleitzahl"] == postcode
-            cantons.append(row["kanton"])
+        if row[col_to_check] == col_val_to_find
+            return_vals.append(row[col_to_return])
         end
     end
 
     puts ''
-    if cantons.length == 0
-        puts "The postcode #{postcode} was not found"
+    if return_vals.length == 0
+        # puts "The postcode #{postcode} was not found"
+        puts "No values were found for #{col_val_to_find}"
     else
-        filtered_cantons = []
-        cantons.each do |canton|
-            if !filtered_cantons.include? canton
-                filtered_cantons.append(canton)
+        filtered_return_vals = []
+        return_vals.each do |val|
+            if !filtered_return_vals.include? val
+                filtered_return_vals.append(val)
             end
         end
-        puts filtered_cantons
+        puts filtered_return_vals
     end
 
     puts "\nDo you want to end the program? Type exit if so"
